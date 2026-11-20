@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدليل الشامل للامتحان العملي: دالة الجمع (SUM) في Excel 2013</title>
+    <!-- استدعاء خط Cairo من Google Fonts مع خطوط بديلة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS للتصميم المتجاوب والحديث -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'Tajawal', 'Segoe UI', 'Tahoma', 'sans-serif'],
+                    },
+                    colors: {
+                        excel: {
+                            DEFAULT: '#217346',
+                            dark: '#185c37',
+                            darker: '#103f25',
+                            light: '#e6f4ea',
+                            soft: '#f2f9f5',
+                            border: '#b7dec6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* تنسيقات أساسية وتثبيت الخط العربي */
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Cairo', 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f6f8;
+            color: #1f2937;
+            overflow-x: hidden;
+        }
+
+        /* خلفية شبكية خفيفة مستوحاة من أوراق إكسل في الترويسة */
+        .excel-grid-bg {
+            background-color: #217346;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 32px 24px;
+        }
+
+        /* شارة المعادلات الإنجليزية لمنع انقلاب الأقواس أو علامة اليساوي في النص العربي */
+        .formula-pill {
+            display: inline-block;
+            direction: ltr;
+            unicode-bidi: isolate;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: 700;
+            background-color: #ecfdf5;
+            color: #14532d;
+            border: 1px solid #86efac;
+            padding: 0.12rem 0.55rem;
+            border-radius: 0.5rem;
+            font-size: 0.95em;
+            vertical-align: middle;
+        }
+        .formula-pill-dark {
+            display: inline-block;
+            direction: ltr;
+            unicode-bidi: isolate;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: 700;
+            background-color: #1e293b;
+            color: #4ade80;
+            border: 1px solid #334155;
+            padding: 0.2rem 0.65rem;
+            border-radius: 0.5rem;
+        }
+        .ltr-inline {
+            display: inline-block;
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
+
+        /* تنسيق أزرار لوحة المفاتيح ثلاثية الأبعاد */
+        .kbd-key {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid #cbd5e1;
+            border-bottom: 4px solid #94a3b8;
+            border-radius: 0.55rem;
+            color: #1e293b;
+            font-weight: 700;
+            user-select: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .kbd-key:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .kbd-key.key-active {
+            background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+            color: #ffffff !important;
+            border-color: #15803d;
+            border-bottom: 4px solid #14532d;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.35), 0 8px 18px rgba(22, 163, 74, 0.35);
+            transform: translateY(-3px) scale(1.04);
+            z-index: 10;
+        }
+        .kbd-key.key-active .key-sub {
+            color: #dcfce7 !important;
+        }
+        .kbd-key.key-modifier-active {
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff !important;
+            border-color: #b45309;
+            border-bottom: 4px solid #78350f;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.35), 0 8px 18px rgba(217, 119, 6, 0.35);
+            transform: translateY(-3px) scale(1.04);
+            z-index: 10;
+        }
+        .kbd-inline {
+            display: inline-block;
+            direction: ltr;
+            unicode-bidi: isolate;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-bottom: 3px solid #94a3b8;
+            border-radius: 0.4rem;
+            padding: 0.08rem 0.45rem;
+            font-family: 'Consolas', monospace;
+            font-weight: 800;
+            font-size: 0.88em;
+            color: #0f172a;
+            margin: 0 2px;
+        }
+
+        /* تنسيقات محاكي Excel 2013 */
+        .excel-table {
+            border-collapse: collapse;
+            width: 100%;
+            direction: ltr;
+            table-layout: fixed;
+        }
+        .excel-table th {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 1px solid #d1d5db;
+            padding: 6px 4px;
+            text-align: center;
+            user-select: none;
+        }
+        .excel-table th.col-active,
+        .excel-table th.row-active {
+            background-color: #d1fae5;
+            color: #166534;
+            border-color: #217346;
+        }
+        .excel-table td {
+            border: 1px solid #d4d4d4;
+            height: 40px;
+            padding: 0;
+            background-color: #ffffff;
+            position: relative;
+            transition: background-color 0.15s ease;
+        }
+        .excel-cell-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-family: 'Consolas', 'Cairo', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: transparent;
+            color: #111827;
+            padding: 2px 4px;
+            direction: ltr;
+        }
+        .excel-cell-selected {
+            outline: 2.5px solid #217346 !important;
+            outline-offset: -2px;
+            z-index: 5;
+            background-color: #f0fdf4 !important;
+        }
+        .excel-cell-target-hint {
+            background-color: #fefce8 !important;
+        }
+        /* تأثير الإطار المتقطع المتحرك عند اختيار نطاق AutoSum */
+        .excel-cell-range {
+            background-color: #dbeafe !important;
+            box-shadow: inset 0 0 0 2px #2563eb;
+            animation: pulseRange 1.2s infinite ease-in-out;
+        }
+        @keyframes pulseRange {
+            0%, 100% { background-color: #dbeafe; }
+            50% { background-color: #bfdbfe; }
+        }
+        /* مقبض التعبئة الصغير في زاوية الخلية النشطة */
+        .fill-handle {
+            position: absolute;
+            right: -3px;
+            bottom: -3px;
+            width: 8px;
+            height: 8px;
+            background-color: #217346;
+            border: 1px solid #ffffff;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* حركة ناعمة لفتح وغلق الأجوبة */
+        .answer-panel {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-excel-light selection:text-excel-dark">
+
+    <!-- ==================== 1. الترويسة وشريط التنقل السريع ==================== -->
+    <header class="excel-grid-bg text-white shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-8 sm:py-10">
+            <!-- شارة البرنامج والكلية -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded bg-white text-excel font-black text-sm">X</span>
+                    <span>Microsoft Office Excel 2013 • قسم الاقتصاد (محاضرة 3 و 4)</span>
+                </div>
+                <span class="bg-amber-400/20 border border-amber-300/40 text-amber-100 text-xs sm:text-sm font-bold px-3 py-1 rounded-full">
+                    دليل التحضير للامتحان العملي
+                </span>
+            </div>
+
+            <!-- العنوان الرئيسي -->
+            <h1 class="text-2xl sm:text-4xl font-black leading-snug mb-3">
+                الدليل الشامل للامتحان العملي: دالة الجمع <span class="ltr-inline bg-white/15 px-2.5 py-0.5 rounded-xl border border-white/25">(SUM)</span> في Excel 2013
+            </h1>
+            <p class="text-green-100 text-sm sm:text-base max-w-3xl leading-relaxed">
+                كل ما تحتاجه لتتقن دالة الجمع بالطريقة التلقائية السريعة والطريقة اليدوية بالكيبورد، مع محاكي عملي تفاعلي للتدريب المباشر وأسئلة الامتحان النموذجية بالحلول الكاملة.
+            </p>
+        </div>
+
+        <!-- شريط التنقل بين الأقسام -->
+        <nav class="bg-excel-darker/80 backdrop-blur border-t border-white/15 sticky top-0 z-40">
+            <div class="max-w-5xl mx-auto px-3 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar text-xs sm:text-sm font-bold">
+                <a href="#autosum-section" class="shrink-0 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-excel-dark transition">1. الطريقة التلقائية (AutoSum)</a>
+                <a href="#manual-section" class="shrink-0 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-excel-dark transition">2. الطريقة اليدوية (بالكيبورد)</a>
+                <a href="#simulator-section" class="shrink-0 px-3.5 py-2 rounded-xl bg-amber-400 text-slate-900 hover:bg-amber-300 transition">3. محاكي Excel العملي</a>
+                <a href="#qa-section" class="shrink-0 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-excel-dark transition">4. أسئلة وأجوبة الامتحان</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-7 space-y-10">
+
+        <!-- ==================== بطاقة القاعدة الذهبية ==================== -->
+        <section aria-label="القاعدة الذهبية">
+            <div class="bg-gradient-to-l from-amber-50 via-yellow-50 to-amber-100/70 border-2 border-amber-400 rounded-2xl p-5 sm:p-6 shadow-md relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div class="w-14 h-14 shrink-0 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-3xl shadow-md">
+                        💡
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="inline-flex items-center gap-2 text-amber-800 font-black text-base sm:text-lg">
+                            <span>قاعدة ذهبية لا تنساها أبداً في الامتحان:</span>
+                        </div>
+                        <p class="text-slate-800 font-semibold text-sm sm:text-base leading-relaxed">
+                            برنامج <span class="ltr-inline font-bold">Excel 2013</span> <strong>لا يتعامل مع الأرقام المباشرة</strong> (مثل <span class="formula-pill bg-red-50 text-red-700 border-red-300">1+1</span>)، بل يتعامل دائماً مع <strong>أسماء الخلايا</strong> (مثل <span class="formula-pill">A1+A2</span> أو <span class="formula-pill">=SUM(A1:A5)</span>). أي عملية حسابية يجب أن تُكتب باستخدام عناوين الخلايا لضمان الدرجة الكاملة!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== القسم الأول: الطريقة السهلة التلقائية (AutoSum Σ) ==================== -->
+        <section id="autosum-section" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-excel text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-white text-excel font-black text-2xl flex items-center justify-center shadow">Σ</span>
+                    <div>
+                        <span class="text-xs text-green-200 font-bold block">القسم الأول • الطريقة الأسرع في الامتحان</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold">الطريقة السهلة التلقائية (AutoSum Σ)</h2>
+                    </div>
+                </div>
+                <span class="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-xl">بدون كتابة الصيغة يدوياً</span>
+            </div>
+
+            <div class="p-5 sm:p-7 space-y-6">
+                <!-- رسم توضيحي لمسار أداة الجمع التلقائي -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center md:text-right">
+                        <div class="text-xs font-bold text-slate-500">أين تجد أيكونة الجمع التلقائي (Σ) في Excel 2013؟</div>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 text-xs sm:text-sm font-bold text-slate-700">
+                            <span class="bg-white border border-slate-300 px-2.5 py-1 rounded-lg text-excel">تبويب الصفحة الرئيسية (Home)</span>
+                            <span>←</span>
+                            <span class="bg-white border border-slate-300 px-2.5 py-1 rounded-lg">مجموعة تحرير (Editing)</span>
+                            <span>←</span>
+                            <span class="bg-excel text-white px-3 py-1 rounded-lg shadow-sm">Σ AutoSum ← Sum</span>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-1">
+                            <strong>مسار بديل (من المحاضرة 4):</strong> تبويب الصيغ <span class="ltr-inline font-bold text-excel">Formulas</span> ← مجموعة مكتبة الدوال <span class="ltr-inline font-bold">Function Library</span> ← <span class="ltr-inline font-bold">Σ AutoSum</span>.
+                        </p>
+                    </div>
+                    <!-- شريط صيغة مصغر توضيحي -->
+                    <div class="shrink-0 bg-white border border-slate-300 rounded-xl p-2 shadow-inner flex items-center gap-2 text-xs font-mono" dir="ltr">
+                        <span class="px-2 py-1 bg-slate-100 border border-slate-300 rounded font-bold text-slate-700">A6</span>
+                        <span class="text-red-500 font-black px-1">✕</span>
+                        <span class="text-excel font-black px-1">✓</span>
+                        <span class="italic font-serif text-slate-500 font-bold px-1">fx</span>
+                        <span class="px-2.5 py-1 bg-green-50 border border-green-300 rounded text-excel-dark font-bold">=SUM(A1:A5)</span>
+                    </div>
+                </div>
+
+                <!-- الخطوات المرقمة من 1 إلى 5 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                    <!-- خطوة 1 -->
+                    <div class="bg-excel-soft/70 border border-excel-border rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-8 h-8 rounded-full bg-excel text-white font-black text-sm flex items-center justify-center mb-3">1</div>
+                            <h3 class="font-extrabold text-slate-800 mb-1.5 text-sm">إدخال الأرقام</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                ندخل الأرقام داخل الخلايا المطلوبة، مثلاً في الخلايا من <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span> نكتب القيم: <span class="ltr-inline font-bold">1, 2, 3, 4, 5</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- خطوة 2 -->
+                    <div class="bg-excel-soft/70 border border-excel-border rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-8 h-8 rounded-full bg-excel text-white font-black text-sm flex items-center justify-center mb-3">2</div>
+                            <h3 class="font-extrabold text-slate-800 mb-1.5 text-sm">تحديد الخلية النشطة</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                نضع مؤشر الماوس على الخلية التي نريد ظهور الناتج فيها (مثلاً <span class="formula-pill">A6</span>) ونضغط <strong>بزر الماوس الأيسر</strong> لجعلها خلية نشطة.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- خطوة 3 -->
+                    <div class="bg-excel-soft/70 border border-excel-border rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-8 h-8 rounded-full bg-excel text-white font-black text-sm flex items-center justify-center mb-3">3</div>
+                            <h3 class="font-extrabold text-slate-800 mb-1.5 text-sm">الضغط على Σ AutoSum</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                نذهب إلى تبويب <span class="ltr-inline font-bold">Home</span> ← مجموعة <span class="ltr-inline font-bold">Editing</span> ← نضغط على أيكونة <span class="ltr-inline font-bold text-excel">Σ AutoSum</span> ونختار <span class="ltr-inline font-bold">Sum</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- خطوة 4 -->
+                    <div class="bg-excel-soft/70 border border-excel-border rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-8 h-8 rounded-full bg-excel text-white font-black text-sm flex items-center justify-center mb-3">4</div>
+                            <h3 class="font-extrabold text-slate-800 mb-1.5 text-sm">ظهور المعادلة تلقائياً</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                تظهر المعادلة تلقائياً في شريط الصيغة وفي الخلية <span class="formula-pill">A6</span> بهذا الشكل: <span class="formula-pill">=SUM(A1:A5)</span> وتظهر علامتا (<span class="text-excel font-bold">✓</span>) و (<span class="text-red-600 font-bold">✕</span>).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- خطوة 5 -->
+                    <div class="bg-excel-soft/70 border border-excel-border rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="w-8 h-8 rounded-full bg-excel text-white font-black text-sm flex items-center justify-center mb-3">5</div>
+                            <h3 class="font-extrabold text-slate-800 mb-1.5 text-sm">التأكيد وإظهار الناتج</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                نضغط على علامة الصح (<span class="text-excel font-bold">✓</span>) في شريط الصيغة أو مفتاح <span class="kbd-inline">Enter</span> ليظهر الناتج (<strong class="text-excel">15</strong>). أما علامة (<span class="text-red-600 font-bold">✕</span>) فتقوم بإلغاء العملية.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تلميح اختصار الكيبورد السريع -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⚡</span>
+                        <p class="text-sm font-bold text-emerald-950">
+                            تلميح سريع للمحترفين: يمكنك تنفيذ الجمع التلقائي (AutoSum) مباشرة من الكيبورد بالضغط على:
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-1.5" dir="ltr">
+                        <span class="kbd-inline px-3 py-1 bg-white text-excel-dark">Alt</span>
+                        <span class="font-black text-emerald-700">+</span>
+                        <span class="kbd-inline px-3 py-1 bg-white text-excel-dark">=</span>
+                        <span class="text-xs text-emerald-700 font-bold mx-1">ثم</span>
+                        <span class="kbd-inline px-3 py-1 bg-excel text-white border-excel-dark">Enter</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== القسم الثاني: الطريقة اليدوية بالكيبورد التفاعلي ==================== -->
+        <section id="manual-section" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-slate-800 text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-excel text-white font-black text-xl flex items-center justify-center shadow">⌨️</span>
+                    <div>
+                        <span class="text-xs text-slate-300 font-bold block">القسم الثاني • تعلم الكتابة الدقيقة على الحاسبة</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold">الطريقة اليدوية: كيف تكتب المعادلة بكيبورد الحاسبة؟</h2>
+                    </div>
+                </div>
+                <span class="formula-pill-dark text-sm">=SUM(A1:A5)</span>
+            </div>
+
+            <div class="p-5 sm:p-7 space-y-6">
+                <p class="text-sm text-slate-600 font-semibold">
+                    اضغط على أي خطوة في القائمة أدناه (أو استخدم أزرار <strong>التالي / السابق</strong>) لتشاهد المفتاح الصحيح يضيء مباشرة على كيبورد الحاسبة وتتابع بناء المعادلة خطوة بخطوة:
+                </p>
+
+                <!-- شاشة العرض المباشر للمعادلة والخطوة الحالية -->
+                <div class="bg-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-inner space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span id="step-badge" class="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full">الخطوة 0 / 8</span>
+                            <h3 id="step-title" class="font-extrabold text-base sm:text-lg text-green-400">خطوة التحضير: تحويل لغة الكيبورد</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="btn-prev-step" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs sm:text-sm font-bold transition disabled:opacity-40">
+                                ◄ السابق
+                            </button>
+                            <button id="btn-play-steps" type="button" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs sm:text-sm font-extrabold transition">
+                                ▶ تشغيل تلقائي
+                            </button>
+                            <button id="btn-next-step" type="button" class="px-3.5 py-1.5 rounded-xl bg-excel hover:bg-green-600 text-white text-xs sm:text-sm font-bold transition">
+                                التالي ►
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- شرح الخطوة + شريط الصيغة المتدرج -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-7 space-y-1">
+                            <p id="step-desc" class="text-slate-200 text-sm sm:text-base leading-relaxed font-semibold">
+                                قبل كتابة أي حرف، تأكد من تحويل لغة الكيبورد إلى الإنجليزية (EN) عبر الضغط على <span class="kbd-inline">Alt</span> + <span class="kbd-inline">Shift</span> معاً.
+                            </p>
+                            <div id="step-keys-hint" class="text-xs text-amber-300 font-bold pt-1">
+                                المفاتيح المضاءة: Alt + Shift
+                            </div>
+                        </div>
+                        <div class="md:col-span-5 bg-slate-800 border border-slate-600 rounded-xl p-3">
+                            <div class="text-[11px] text-slate-400 font-bold mb-1 flex justify-between">
+                                <span>ما سيظهر في شريط الصيغة (A6):</span>
+                                <span id="lang-indicator" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">EN</span>
+                            </div>
+                            <div id="step-formula-display" dir="ltr" class="font-mono text-xl sm:text-2xl font-black text-green-400 bg-slate-950 rounded-lg px-3 py-2.5 min-h-[48px] flex items-center justify-between border border-slate-700">
+                                <span id="step-formula-text" class="tracking-wide"></span>
+                                <span class="w-2.5 h-6 bg-green-400 animate-pulse inline-block ml-1"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- لوحة المفاتيح التفاعلية (مرسومة بعناية مع الحروف العربية والإنكليزية) -->
+                <div class="bg-slate-200/80 border border-slate-300 rounded-2xl p-3 sm:p-5 overflow-x-auto">
+                    <div class="min-w-[600px] max-w-3xl mx-auto space-y-2 select-none" dir="ltr">
+                        <!-- صف الأرقام -->
+                        <div class="grid grid-cols-14 gap-1.5 text-center" style="grid-template-columns: repeat(14, minmax(0, 1fr));">
+                            <div class="kbd-key h-11 text-xs" data-key="1"><span>!</span><span class="text-sm font-black">1</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>@</span><span>2</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>#</span><span>3</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>$</span><span>4</span></div>
+                            <div class="kbd-key h-11 text-xs" data-key="5"><span>%</span><span class="text-sm font-black">5</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-75" data-key="6"><span>^</span><span>6</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>&amp;</span><span>7</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>*</span><span>8</span></div>
+                            <div class="kbd-key h-11 text-xs" data-key="9"><span class="text-excel font-black text-sm">(</span><span class="text-xs">9</span></div>
+                            <div class="kbd-key h-11 text-xs" data-key="0"><span class="text-excel font-black text-sm">)</span><span class="text-xs">0</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-60"><span>_</span><span>-</span></div>
+                            <div class="kbd-key h-11 text-xs" data-key="="><span>+</span><span class="text-base font-black text-excel">=</span></div>
+                            <div class="kbd-key h-11 text-[11px] col-span-2 opacity-75">⌫ Backspace</div>
+                        </div>
+
+                        <!-- صف الحروف الأول QWERTY -->
+                        <div class="grid gap-1.5 text-center" style="grid-template-columns: 1.3fr repeat(11, 1fr);">
+                            <div class="kbd-key h-11 text-[11px] opacity-60">Tab</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">Q</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">W</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">E</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">R</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">T</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">Y</div>
+                            <div class="kbd-key h-11 text-sm font-black" data-key="U">U<span class="key-sub text-[10px] text-slate-400">ع</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-50">I</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">O</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">P</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">[ ]</div>
+                        </div>
+
+                        <!-- صف الحروف الثاني ASDF -->
+                        <div class="grid gap-1.5 text-center" style="grid-template-columns: 1.5fr repeat(10, 1fr) 1.8fr;">
+                            <div class="kbd-key h-11 text-[10px] opacity-60">Caps</div>
+                            <div class="kbd-key h-11 text-sm font-black" data-key="A">A<span class="key-sub text-[10px] text-slate-400">ش</span></div>
+                            <div class="kbd-key h-11 text-sm font-black" data-key="S">S<span class="key-sub text-[10px] text-slate-400">س</span></div>
+                            <div class="kbd-key h-11 text-xs opacity-50">D</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">F</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">G</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">H</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">J</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">K</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">L</div>
+                            <!-- مفتاح النقطتين الرأسيتين وحرف ك -->
+                            <div class="kbd-key h-11 text-xs" data-key=";">
+                                <span class="text-excel font-black text-base leading-none">:</span>
+                                <span class="key-sub text-[11px] font-bold text-slate-600">; ك</span>
+                            </div>
+                            <div class="kbd-key h-11 text-xs font-black" data-key="Enter">↵ Enter</div>
+                        </div>
+
+                        <!-- صف الحروف الثالث ZXCV -->
+                        <div class="grid gap-1.5 text-center" style="grid-template-columns: 2fr repeat(9, 1fr) 2fr;">
+                            <div class="kbd-key h-11 text-xs font-black" data-key="ShiftLeft">⇧ Shift</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">Z</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">X</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">C</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">V</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">B</div>
+                            <div class="kbd-key h-11 text-xs opacity-50">N</div>
+                            <div class="kbd-key h-11 text-sm font-black" data-key="M">M<span class="key-sub text-[10px] text-slate-400">ة</span></div>
+                            <!-- مفتاح الفاصلة وحرف و -->
+                            <div class="kbd-key h-11 text-xs opacity-80" data-key=",">
+                                <span>&lt;</span>
+                                <span class="key-sub text-[11px]">, و</span>
+                            </div>
+                            <div class="kbd-key h-11 text-xs opacity-50">. ز</div>
+                            <div class="kbd-key h-11 text-xs font-black" data-key="ShiftRight">⇧ Shift</div>
+                        </div>
+
+                        <!-- الصف السفلي Ctrl / Alt / Space -->
+                        <div class="grid gap-1.5 text-center" style="grid-template-columns: 1.4fr 1.3fr 5fr 1.3fr 1.4fr;">
+                            <div class="kbd-key h-10 text-xs opacity-70" data-key="Ctrl">Ctrl</div>
+                            <div class="kbd-key h-10 text-xs font-black" data-key="Alt">Alt</div>
+                            <div class="kbd-key h-10 text-xs opacity-60">Space (مسافة)</div>
+                            <div class="kbd-key h-10 text-xs opacity-70">Alt</div>
+                            <div class="kbd-key h-10 text-xs opacity-70">Ctrl</div>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-3 sm:hidden">← اسحب الكيبورد يميناً أو يساراً لرؤية كافة المفاتيح بوضوح →</p>
+                </div>
+
+                <!-- قائمة الخطوات القابلة للنقر -->
+                <div id="keyboard-steps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    <!-- يتم توليد الأزرار ديناميكياً عبر JavaScript -->
+                </div>
+
+                <!-- جدول مقارنة سريع لحالات الجمع الأربع -->
+                <div class="pt-4">
+                    <h3 class="text-lg font-extrabold text-slate-800 mb-3 flex items-center gap-2">
+                        <span class="w-2.5 h-6 bg-excel rounded-full inline-block"></span>
+                        جدول المقارنة السريع لحالات الجمع الأربع في الامتحان
+                    </h3>
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                        <table class="w-full text-right border-collapse min-w-[540px]">
+                            <thead>
+                                <tr class="bg-excel text-white text-xs sm:text-sm">
+                                    <th class="p-3.5 font-bold">حالة الجمع</th>
+                                    <th class="p-3.5 font-bold">شكل المعادلة بالضبط</th>
+                                    <th class="p-3.5 font-bold">شرح سريع وملاحظات عملية</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-xs sm:text-sm bg-white">
+                                <tr class="hover:bg-excel-soft/50 transition">
+                                    <td class="p-3.5 font-extrabold text-slate-800">1. جمع عمودي</td>
+                                    <td class="p-3.5"><span class="formula-pill">=SUM(A1:A5)</span></td>
+                                    <td class="p-3.5 text-slate-600">تكون الخلايا في نفس العمود (من الأعلى للأسفل)، والناتج يوضع عادةً في <span class="formula-pill">A6</span>.</td>
+                                </tr>
+                                <tr class="hover:bg-excel-soft/50 transition">
+                                    <td class="p-3.5 font-extrabold text-slate-800">2. جمع أفقي</td>
+                                    <td class="p-3.5"><span class="formula-pill">=SUM(A1:C1)</span></td>
+                                    <td class="p-3.5 text-slate-600">تكون الخلايا في نفس الصف (بجانب بعضها)، والناتج يوضع عادةً في الخلية التالية <span class="formula-pill">D1</span>.</td>
+                                </tr>
+                                <tr class="hover:bg-excel-soft/50 transition">
+                                    <td class="p-3.5 font-extrabold text-slate-800">3. جمع مصفوفة (صفوف وأعمدة)</td>
+                                    <td class="p-3.5"><span class="formula-pill">=SUM(A1:C3)</span></td>
+                                    <td class="p-3.5 text-slate-600">نكتب اسم <strong>أول خلية</strong> في الزاوية العليا (<span class="formula-pill">A1</span>) ثم (<span class="formula-pill">:</span>) ثم <strong>آخر خلية</strong> في الزاوية السفلى (<span class="formula-pill">C3</span>).</td>
+                                </tr>
+                                <tr class="hover:bg-amber-50/60 transition">
+                                    <td class="p-3.5 font-extrabold text-slate-800">4. جمع خلايا متفرقة (مبعثرة)</td>
+                                    <td class="p-3.5"><span class="formula-pill">=SUM(A1,B2,C3)</span></td>
+                                    <td class="p-3.5 text-slate-600 leading-relaxed">
+                                        على حاسبة المختبر نستخدم الفاصلة <span class="formula-pill">,</span> (مفتاح <span class="kbd-inline">و</span> بالكيبورد الإنجليزي)، أو نضغط باستمرار على مفتاح <span class="kbd-inline">Ctrl</span> وننقر بالماوس على كل خلية.
+                                        <span class="block mt-1 text-amber-800 bg-amber-100/80 px-2 py-1 rounded-lg text-xs font-bold">
+                                            ⚠️ تنبيه مهم لحاسبة المختبر: بعض إعدادات ويندوز تستخدم الفاصلة المنقوطة (<span class="ltr-inline">;</span>) بدلاً من الفاصلة (<span class="ltr-inline">,</span>)؛ راقب التلميح الصغير الذي يظهر أسفل المعادلة في Excel أثناء الكتابة!
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== القسم الثالث: محاكي Excel 2013 التفاعلي ==================== -->
+        <section id="simulator-section" class="bg-white rounded-3xl shadow-md border-2 border-excel/30 overflow-hidden">
+            <div class="bg-gradient-to-l from-excel-dark to-excel text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-white/15 border border-white/25 text-white font-black text-xl flex items-center justify-center">💻</span>
+                    <div>
+                        <span class="text-xs text-green-200 font-bold block">القسم الثالث • تدرب بيدك قبل الامتحان</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold">محاكي Excel 2013 التفاعلي المباشر</h2>
+                    </div>
+                </div>
+                <!-- أزرار تبديل التمارين -->
+                <div class="flex flex-wrap items-center gap-1.5 text-xs font-bold">
+                    <button type="button" onclick="loadExercise(1)" id="ex-btn-1" class="ex-btn px-3 py-1.5 rounded-xl bg-white text-excel-dark shadow transition">تمرين 1: عمودي</button>
+                    <button type="button" onclick="loadExercise(2)" id="ex-btn-2" class="ex-btn px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white transition">تمرين 2: أفقي</button>
+                    <button type="button" onclick="loadExercise(3)" id="ex-btn-3" class="ex-btn px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white transition">تمرين 3: مصفوفة</button>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-6 space-y-4">
+                <!-- تعليمات التمرين الحالي -->
+                <div class="bg-excel-soft border border-excel-border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="text-xs font-extrabold text-excel mb-0.5" id="sim-task-label">المطلوب في التمرين 1 (جمع عمودي):</div>
+                        <p class="text-sm font-bold text-slate-800" id="sim-task-desc">
+                            احسب مجموع الخلايا من <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span> في الخلية النشطة <span class="formula-pill">A6</span> (اضغط على <strong>Σ AutoSum</strong> للطريقة التلقائية، أو اكتب المعادلة يدوياً في شريط الصيغة ثم اضغط Enter).
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" onclick="showSimulatorHint()" class="px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-extrabold transition">
+                            💡 تلميح
+                        </button>
+                        <button type="button" onclick="resetCurrentExercise()" class="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-extrabold transition">
+                            ↺ إعادة التمرين
+                        </button>
+                    </div>
+                </div>
+
+                <!-- نافذة Excel 2013 المحاكاة -->
+                <div class="border-2 border-slate-300 rounded-2xl overflow-hidden shadow-lg bg-white">
+                    <!-- شريط عنوان إكسل 2013 الأخضر -->
+                    <div class="bg-excel text-white px-4 py-2 flex items-center justify-between text-xs font-bold" dir="ltr">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-white text-excel font-black px-1.5 py-0.5 rounded text-[11px]">X</span>
+                            <span>Book1 - Microsoft Excel 2013</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-white/80">
+                            <span>—</span>
+                            <span>▢</span>
+                            <span>✕</span>
+                        </div>
+                    </div>
+
+                    <!-- شريط الأدوات Ribbon المصغر -->
+                    <div class="bg-[#f3f4f6] border-b border-slate-300 px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold text-excel bg-white px-2.5 py-1 rounded-t-lg border border-b-0 border-slate-300 -mb-2.5 pb-2">HOME</span>
+                            <span class="text-xs font-bold text-slate-500 px-2">FORMULAS</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- زر AutoSum الفعلي -->
+                            <button type="button" id="sim-autosum-btn" onclick="triggerAutoSum()"
+                                class="inline-flex items-center gap-2 bg-white hover:bg-excel hover:text-white text-slate-800 border border-slate-300 hover:border-excel-dark px-3.5 py-1.5 rounded-xl font-extrabold text-xs sm:text-sm shadow-sm transition group">
+                                <span class="text-lg font-black text-excel group-hover:text-white leading-none">Σ</span>
+                                <span dir="ltr">AutoSum (Sum)</span>
+                            </button>
+                            <span class="text-[11px] text-slate-500 hidden md:inline font-semibold">أو جرّب اختصار <span class="kbd-inline">Alt + =</span></span>
+                        </div>
+                    </div>
+
+                    <!-- شريط الصيغة Formula Bar -->
+                    <div class="bg-white border-b border-slate-300 p-2 flex items-center gap-1.5 sm:gap-2" dir="ltr">
+                        <!-- صندوق الاسم Name Box -->
+                        <div id="sim-name-box" title="صندوق الاسم (الخلية النشطة)"
+                            class="w-14 sm:w-16 shrink-0 text-center font-mono font-extrabold text-sm bg-slate-50 border border-slate-300 rounded-lg py-1.5 text-slate-800">
+                            A6
+                        </div>
+
+                        <!-- أزرار خطأ وصح و fx -->
+                        <div class="flex items-center border border-slate-300 rounded-lg bg-slate-50 overflow-hidden shrink-0">
+                            <button type="button" id="sim-cancel-btn" onclick="cancelFormula()" title="إلغاء العملية (✕)"
+                                class="px-2.5 py-1.5 text-red-500 hover:bg-red-100 font-black text-sm transition disabled:opacity-30">✕</button>
+                            <button type="button" id="sim-confirm-btn" onclick="confirmFormula()" title="تأكيد المعادلة وإظهار الناتج (✓)"
+                                class="px-2.5 py-1.5 text-excel hover:bg-green-100 font-black text-sm border-x border-slate-300 transition">✓</button>
+                            <span class="px-2.5 py-1.5 font-serif italic font-bold text-slate-500 text-sm select-none">fx</span>
+                        </div>
+
+                        <!-- حقل كتابة المعادلة -->
+                        <input type="text" id="sim-formula-input" autocomplete="off" spellcheck="false"
+                            placeholder="اكتب المعادلة هنا مثل =SUM(A1:A5) ثم اضغط Enter..."
+                            class="flex-1 min-w-0 font-mono text-sm sm:text-base font-bold px-3 py-1.5 border border-slate-300 focus:border-excel focus:ring-2 focus:ring-excel/25 rounded-lg outline-none text-slate-900 bg-white">
+                    </div>
+
+                    <!-- شبكة الخلايا A-D و 1-6 -->
+                    <div class="overflow-x-auto bg-slate-100 p-2">
+                        <table class="excel-table bg-white shadow-sm rounded overflow-hidden min-w-[340px]" id="excel-grid">
+                            <thead>
+                                <tr>
+                                    <th class="w-10 bg-slate-200">◢</th>
+                                    <th data-col="A">A</th>
+                                    <th data-col="B">B</th>
+                                    <th data-col="C">C</th>
+                                    <th data-col="D">D</th>
+                                </tr>
+                            </thead>
+                            <tbody id="excel-grid-body">
+                                <!-- يتم بناء الصفوف 1 إلى 6 عبر JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- شريط الحالة السفلي -->
+                    <div class="bg-[#f3f4f6] border-t border-slate-300 px-3 py-1.5 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-white text-excel px-2.5 py-0.5 rounded-t border border-slate-300 font-extrabold">Sheet1</span>
+                            <span>يمكنك تعديل الأرقام داخل الخلايا أيضاً!</span>
+                        </div>
+                        <span id="sim-status-text" class="text-excel font-bold">جاهز للعمل</span>
+                    </div>
+                </div>
+
+                <!-- مربع رسائل التوجيه والتحقق (بديل أنيق بدون alert) -->
+                <div id="sim-feedback" class="hidden rounded-2xl p-4 border-2 text-sm font-bold leading-relaxed transition-all"></div>
+            </div>
+        </section>
+
+        <!-- ==================== القسم الرابع: أسئلة وأجوبة عملية نموذجية ==================== -->
+        <section id="qa-section" class="space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-excel text-white font-black text-xl flex items-center justify-center shadow">📝</span>
+                    <div>
+                        <span class="text-xs text-excel font-bold block">القسم الرابع • مستوحاة مباشرة من محاضرات المنهج</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-800">أسئلة وأجوبة عملية نموذجية للامتحان</h2>
+                    </div>
+                </div>
+                <button type="button" id="toggle-all-qa" onclick="toggleAllAnswers()"
+                    class="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:border-excel hover:text-excel text-xs sm:text-sm font-extrabold shadow-sm transition">
+                    👁️ إظهار جميع الحلول
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+
+                <!-- سؤال 1 -->
+                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <span class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-excel-light text-excel-dark">سؤال 1 • جمع عمودي</span>
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-800 leading-snug">
+                                جد ناتج جمع الخلايا <span class="formula-pill">A1+A2+A3+A4+A5</span> إذا كانت الأرقام فيها (<span class="ltr-inline font-bold">1, 2, 3, 4, 5</span>) على التوالي، واجعل الناتج يظهر في الخلية <span class="formula-pill">A6</span>.
+                            </h3>
+                        </div>
+                        <button type="button" onclick="toggleAnswer('ans-1', this)"
+                            class="qa-btn shrink-0 px-4 py-2.5 rounded-xl bg-excel hover:bg-excel-dark text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                            إظهار الحل النموذجي ▾
+                        </button>
+                    </div>
+                    <div id="ans-1" class="answer-panel hidden border-t border-slate-200 bg-excel-soft/50 p-5 space-y-4 text-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                                <h4 class="font-extrabold text-excel">أولاً: بالطريقة التلقائية (AutoSum):</h4>
+                                <ol class="list-decimal list-inside space-y-1.5 text-slate-700 leading-relaxed">
+                                    <li>ندخل الأرقام (1، 2، 3، 4، 5) في الخلايا <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span>.</li>
+                                    <li>نحدد الخلية <span class="formula-pill">A6</span> كخلية نشطة بالنقر عليها بزر الماوس الأيسر.</li>
+                                    <li>نضغط على دالة الجمع التلقائي <span class="ltr-inline font-bold text-excel">Σ AutoSum</span> من تبويب <span class="ltr-inline font-bold">Home</span> ← مجموعة <span class="ltr-inline font-bold">Editing</span>.</li>
+                                    <li>تظهر المعادلة في شريط الصيغة: <span class="formula-pill">=SUM(A1:A5)</span>.</li>
+                                    <li>نضغط على علامة الصح (✓) أو <span class="kbd-inline">Enter</span> ليظهر الناتج.</li>
+                                </ol>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                                <h4 class="font-extrabold text-slate-800">ثانياً: بالطريقة اليدوية (بالكيبورد):</h4>
+                                <ol class="list-decimal list-inside space-y-1.5 text-slate-700 leading-relaxed">
+                                    <li>ننقر على الخلية <span class="formula-pill">A6</span> ونتأكد أن لغة الكيبورد إنجليزية (<span class="kbd-inline">Alt+Shift</span>).</li>
+                                    <li>نكتب في الخلية أو شريط الصيغة: <span class="formula-pill">=SUM(A1:A5)</span> (النقطتان <span class="formula-pill">:</span> عبر <span class="kbd-inline">Shift + ك</span>).</li>
+                                    <li>نضغط مفتاح <span class="kbd-inline">Enter</span>.</li>
+                                </ol>
+                                <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                    <span class="font-bold text-slate-600">شكل المعادلة النهائي: <span class="formula-pill">=SUM(A1:A5)</span></span>
+                                    <span class="bg-excel text-white font-black px-3 py-1 rounded-lg">الناتج = 15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- سؤال 2 -->
+                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <span class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">سؤال 2 • جمع أفقي</span>
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-800 leading-snug">
+                                لديك القيم (<span class="ltr-inline font-bold">10, 20, 30</span>) في الخلايا <span class="formula-pill">A1</span> و <span class="formula-pill">B1</span> و <span class="formula-pill">C1</span> بشكل أفقي، جد مجموعها في الخلية <span class="formula-pill">D1</span>.
+                            </h3>
+                        </div>
+                        <button type="button" onclick="toggleAnswer('ans-2', this)"
+                            class="qa-btn shrink-0 px-4 py-2.5 rounded-xl bg-excel hover:bg-excel-dark text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                            إظهار الحل النموذجي ▾
+                        </button>
+                    </div>
+                    <div id="ans-2" class="answer-panel hidden border-t border-slate-200 bg-excel-soft/50 p-5 space-y-3 text-sm">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2.5">
+                            <h4 class="font-extrabold text-excel">خطوات الحل النموذجي:</h4>
+                            <ol class="list-decimal list-inside space-y-1.5 text-slate-700 leading-relaxed">
+                                <li>ندخل القيم <span class="ltr-inline font-bold">10</span> في <span class="formula-pill">A1</span>، و <span class="ltr-inline font-bold">20</span> في <span class="formula-pill">B1</span>، و <span class="ltr-inline font-bold">30</span> في <span class="formula-pill">C1</span>.</li>
+                                <li>نجعل الخلية <span class="formula-pill">D1</span> خلية نشطة بالنقر عليها بزر الماوس الأيسر.</li>
+                                <li>نضغط على أيكونة الجمع التلقائي <span class="ltr-inline font-bold text-excel">Σ AutoSum</span> ونختار <span class="ltr-inline font-bold">Sum</span> (أو نكتب المعادلة يدوياً بالكيبورد الإنجليزي).</li>
+                                <li>تظهر في شريط الصيغة المعادلة: <span class="formula-pill">=SUM(A1:C1)</span> مع علامتي الصح والخطأ.</li>
+                                <li>نضغط على علامة الصح (✓) أو مفتاح <span class="kbd-inline">Enter</span> ليظهر الناتج في الخلية النشطة <span class="formula-pill">D1</span>.</li>
+                            </ol>
+                            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                                <span class="font-bold text-slate-700">المعادلة الصحيحة: <span class="formula-pill">=SUM(A1:C1)</span></span>
+                                <span class="bg-excel text-white font-black px-3.5 py-1 rounded-lg">الناتج في D1 = 60</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- سؤال 3 -->
+                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <span class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800">سؤال 3 • جمع مصفوفة خلايا</span>
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-800 leading-snug">
+                                قم بعملية جمع لمصفوفة من الخلايا (مجموعة من الصفوف والأعمدة) تبدأ من الخلية <span class="formula-pill">A1</span> وتنتهي في الخلية <span class="formula-pill">C3</span>، وضع الناتج في الخلية النشطة <span class="formula-pill">D6</span>.
+                            </h3>
+                        </div>
+                        <button type="button" onclick="toggleAnswer('ans-3', this)"
+                            class="qa-btn shrink-0 px-4 py-2.5 rounded-xl bg-excel hover:bg-excel-dark text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                            إظهار الحل النموذجي ▾
+                        </button>
+                    </div>
+                    <div id="ans-3" class="answer-panel hidden border-t border-slate-200 bg-excel-soft/50 p-5 space-y-3 text-sm">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2.5">
+                            <h4 class="font-extrabold text-excel">خطوات الحل النموذجي (كما وردت في المحاضرة 4):</h4>
+                            <ol class="list-decimal list-inside space-y-1.5 text-slate-700 leading-relaxed">
+                                <li>ندخل البيانات الرقمية في خلايا المصفوفة (الأعمدة <span class="ltr-inline font-bold">A, B, C</span> والصفوف <span class="ltr-inline font-bold">1, 2, 3</span>).</li>
+                                <li>نجعل الخلية <span class="formula-pill">D6</span> خلية نشطة (وهي خلية فارغة تقع خارج المصفوفة المراد جمعها) بالنقر عليها بزر الماوس الأيسر.</li>
+                                <li>ننقر على أمر الجمع التلقائي <span class="ltr-inline font-bold text-excel">Σ AutoSum</span> ونختار <span class="ltr-inline font-bold">Sum</span>، فتظهر الصيغة <span class="formula-pill">=SUM()</span> في شريط الصيغة.</li>
+                                <li>نكتب بين القوسين اسم <strong>أول خلية</strong> في المصفوفة (<span class="formula-pill">A1</span>)، ثم علامة النقطتين (<span class="formula-pill">:</span>) بالضغط على <span class="kbd-inline">Shift + ك</span>، ثم اسم <strong>آخر خلية</strong> في المصفوفة (<span class="formula-pill">C3</span>) لتصبح: <span class="formula-pill">=SUM(A1:C3)</span> (أو نحدد المصفوفة بالماوس بالسحب من A1 إلى C3).</li>
+                                <li>نضغط على علامة الصح (✓) أو <span class="kbd-inline">Enter</span> فتظهر نتيجة جمع جميع خلايا المصفوفة في <span class="formula-pill">D6</span>.</li>
+                            </ol>
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs font-bold text-amber-900">
+                                📌 <strong>ملاحظة الدرجة الكاملة (من الملزمة):</strong> في الامتحان النظري أو العملي، كتابتك لصيغة المعادلة الصحيحة <span class="formula-pill">=SUM(A1:C3)</span> مع ذكر خطوات تحديد الخلية النشطة وعلامة الصح يضمن لك الدرجة الكاملة!
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- سؤال 4 -->
+                <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <span class="inline-block text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900">سؤال 4 • سؤال تطبيقي متقدم (نمط سؤال المحاضرة المهم جداً)</span>
+                            <h3 class="font-extrabold text-base sm:text-lg text-slate-800 leading-snug">
+                                لديك قيم المتغير <span class="ltr-inline font-bold">Xi</span> في الخلايا من <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span> (الأرقام 1 إلى 5). المطلوب: حساب العمود <span class="ltr-inline font-bold">B</span> بالمعادلة <span class="formula-pill">=(A1-3)^2</span> مع السحب بمقبض التعبئة (<span class="ltr-inline font-bold">+</span>) حتى <span class="formula-pill">B5</span>، ثم استخدام دالة الجمع <span class="formula-pill">=SUM(B1:B5)</span> في <span class="formula-pill">B6</span> لإيجاد المجموع الكلي <span class="ltr-inline font-bold">Σ(Xi - 3)²</span>.
+                            </h3>
+                        </div>
+                        <button type="button" onclick="toggleAnswer('ans-4', this)"
+                            class="qa-btn shrink-0 px-4 py-2.5 rounded-xl bg-excel hover:bg-excel-dark text-white text-xs sm:text-sm font-bold shadow-sm transition">
+                            إظهار الحل النموذجي ▾
+                        </button>
+                    </div>
+                    <div id="ans-4" class="answer-panel hidden border-t border-slate-200 bg-excel-soft/50 p-5 space-y-4 text-sm">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <div class="lg:col-span-7 bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                                <h4 class="font-extrabold text-excel">الخطوات العملية بالترتيب الدقيق:</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-slate-700 leading-relaxed">
+                                    <li>ندخل الأرقام من <span class="ltr-inline font-bold">1</span> إلى <span class="ltr-inline font-bold">5</span> في الخلايا من <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span>.</li>
+                                    <li>نجعل الخلية <span class="formula-pill">B1</span> خلية نشطة، ونكتب في شريط الصيغة (بلغة إنجليزية): <span class="formula-pill">=(A1-3)^2</span> ثم نضغط علامة الصح (✓) أو <span class="kbd-inline">Enter</span>.
+                                        <span class="block text-xs text-slate-500 mt-0.5 mr-4">تلميح الكيبورد: رمز الأس <span class="formula-pill">^</span> يُكتب بالضغط على <span class="kbd-inline">Shift + 6</span>.</span>
+                                    </li>
+                                    <li>نضع مؤشر الماوس على المربع الصغير (علامة <span class="ltr-inline font-bold">+</span> السوداء / مقبض التعبئة) في الزاوية السفلى للخلية <span class="formula-pill">B1</span>، ثم نضغط بزر الماوس الأيسر ونسحب للأسفل حتى الخلية <span class="formula-pill">B5</span>؛ سيكرر Excel المعادلة تلقائياً لكل صف (<span class="formula-pill">A2, A3, A4, A5</span>).</li>
+                                    <li>نجعل الخلية <span class="formula-pill">B6</span> خلية نشطة، ثم نضغط على <span class="ltr-inline font-bold text-excel">Σ AutoSum</span> (أو نكتب يدوياً <span class="formula-pill">=SUM(B1:B5)</span>) ونضغط علامة الصح (✓) أو <span class="kbd-inline">Enter</span>.</li>
+                                </ol>
+                            </div>
+                            <!-- جدول توضيحي للنتائج داخل Excel -->
+                            <div class="lg:col-span-5 bg-white p-4 rounded-xl border border-slate-200 flex flex-col justify-between">
+                                <h4 class="font-extrabold text-slate-800 mb-2 text-xs">شكل الجدول والنتائج النهائية في Excel:</h4>
+                                <table class="w-full text-center text-xs border-collapse font-mono" dir="ltr">
+                                    <thead>
+                                        <tr class="bg-slate-100 text-slate-600">
+                                            <th class="border border-slate-300 py-1.5">Row</th>
+                                            <th class="border border-slate-300 py-1.5">Col A (Xi)</th>
+                                            <th class="border border-slate-300 py-1.5">Col B Formula</th>
+                                            <th class="border border-slate-300 py-1.5 bg-green-50 text-excel">Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="border p-1 bg-slate-50 font-bold">1</td><td class="border p-1">1</td><td class="border p-1 text-slate-600">=(A1-3)^2</td><td class="border p-1 font-bold">4</td></tr>
+                                        <tr><td class="border p-1 bg-slate-50 font-bold">2</td><td class="border p-1">2</td><td class="border p-1 text-slate-600">=(A2-3)^2</td><td class="border p-1 font-bold">1</td></tr>
+                                        <tr><td class="border p-1 bg-slate-50 font-bold">3</td><td class="border p-1">3</td><td class="border p-1 text-slate-600">=(A3-3)^2</td><td class="border p-1 font-bold">0</td></tr>
+                                        <tr><td class="border p-1 bg-slate-50 font-bold">4</td><td class="border p-1">4</td><td class="border p-1 text-slate-600">=(A4-3)^2</td><td class="border p-1 font-bold">1</td></tr>
+                                        <tr><td class="border p-1 bg-slate-50 font-bold">5</td><td class="border p-1">5</td><td class="border p-1 text-slate-600">=(A5-3)^2</td><td class="border p-1 font-bold">4</td></tr>
+                                        <tr class="bg-excel-light">
+                                            <td class="border border-excel p-1.5 font-black text-excel">6</td>
+                                            <td class="border border-excel p-1.5 font-sans font-bold text-slate-700">المجموع</td>
+                                            <td class="border border-excel p-1.5 font-bold text-excel-dark">=SUM(B1:B5)</td>
+                                            <td class="border border-excel p-1.5 font-black text-excel text-sm">10</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="text-[11px] text-slate-500 mt-2 font-sans font-semibold">
+                                    ملاحظة: لو طلب القسمة على 5 في خلية <span class="formula-pill">B7</span> (مثل قانون Y1 بالمحاضرة)، نكتب <span class="formula-pill">=B6/5</span> ليظهر الناتج 2.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== التذييل ==================== -->
+    <footer class="mt-12 bg-slate-900 text-slate-300 py-7 px-4 text-center">
+        <div class="max-w-4xl mx-auto space-y-2">
+            <div class="inline-flex items-center gap-2 text-green-400 font-extrabold text-base">
+                <span>★</span>
+                <span>كل التوفيق والنجاح في الامتحان العملي!</span>
+                <span>★</span>
+            </div>
+            <p class="text-xs text-slate-400">
+                تذكّر دائماً: حوّل الكيبورد للإنكليزي (<span class="ltr-inline text-slate-200 font-mono">Alt+Shift</span>) • ابدأ المعادلة بـ (<span class="ltr-inline text-green-400 font-mono">=</span>) • استخدم أسماء الخلايا وليس الأرقام المباشرة.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ==================== أكواد الجافاسكريبت التفاعلية ==================== -->
+    <script>
+        /* =========================================================================
+           1. منطق الكيبورد التفاعلي (Interactive Keyboard Stepper) للطريقة اليدوية
+           ========================================================================= */
+        const keyboardSteps = [
+            {
+                num: 0,
+                shortTitle: 'التحضير: اللغة EN',
+                title: 'خطوة التحضير (مهمة جداً): تحويل لغة الكيبورد',
+                desc: 'قبل أن تبدأ بالكتابة، حوّل لغة الكيبورد إلى الإنجليزية (EN) عبر الضغط على مفتاحي <span class="kbd-inline">Alt</span> + <span class="kbd-inline">Shift</span> معاً. إذا بقيت اللغة عربية فلن يقبل Excel المعادلة.',
+                keys: ['Alt', 'ShiftLeft'],
+                modifiers: ['Alt', 'ShiftLeft'],
+                keysLabel: 'Alt + Shift (لتحويل اللغة إلى EN)',
+                formula: '',
+                lang: 'AR → EN'
+            },
+            {
+                num: 1,
+                shortTitle: '1. علامة اليساوي =',
+                title: 'الخطوة 1: الضغط على مفتاح اليساوي (=)',
+                desc: 'كل معادلة أو دالة في Excel يجب أن تبدأ بعلامة اليساوي <span class="formula-pill">=</span>. ستجد المفتاح في الصف العلوي للأرقام بجانب مفتاح <span class="kbd-inline">Backspace</span> مباشرة.',
+                keys: ['='],
+                modifiers: [],
+                keysLabel: 'مفتاح =',
+                formula: '=',
+                lang: 'EN'
+            },
+            {
+                num: 2,
+                shortTitle: '2. كتابة كلمة SUM',
+                title: 'الخطوة 2: كتابة اسم دالة الجمع SUM',
+                desc: 'نكتب حروف دالة الجمع بالترتيب: حرف <span class="kbd-inline">S</span> ثم <span class="kbd-inline">U</span> ثم <span class="kbd-inline">M</span> (لا يهم إن كانت الحروف كبيرة أم صغيرة، Excel يحولها تلقائياً).',
+                keys: ['S', 'U', 'M'],
+                modifiers: [],
+                keysLabel: 'S ثم U ثم M',
+                formula: '=SUM',
+                lang: 'EN'
+            },
+            {
+                num: 3,
+                shortTitle: '3. فتح القوس (',
+                title: 'الخطوة 3: فتح القوس (',
+                desc: 'لفتح القوس <span class="formula-pill">(</span> نضغط باستمرار على مفتاح <span class="kbd-inline">Shift</span> ومعه مفتاح الرقم <span class="kbd-inline">9</span> في صف الأرقام العلوي.',
+                keys: ['ShiftLeft', '9'],
+                modifiers: ['ShiftLeft'],
+                keysLabel: 'Shift + 9',
+                formula: '=SUM(',
+                lang: 'EN'
+            },
+            {
+                num: 4,
+                shortTitle: '4. أول خلية A1',
+                title: 'الخطوة 4: كتابة اسم أول خلية (A1)',
+                desc: 'نكتب عنوان أول خلية نريد البدء بالجمع منها، هنا نضغط حرف <span class="kbd-inline">A</span> ثم الرقم <span class="kbd-inline">1</span>.',
+                keys: ['A', '1'],
+                modifiers: [],
+                keysLabel: 'A ثم 1',
+                formula: '=SUM(A1',
+                lang: 'EN'
+            },
+            {
+                num: 5,
+                shortTitle: '5. النقطتان الرأسيتان :',
+                title: 'الخطوة 5: كتابة النقطتين الرأسيتين (:) وتعني "إلى"',
+                desc: 'لكتابة النقطتين <span class="formula-pill">:</span> (التي تعني من أول خلية <strong>إلى</strong> آخر خلية) نضغط باستمرار على مفتاح <span class="kbd-inline">Shift</span> ومعه مفتاح حرف <strong>ك</strong> (<span class="kbd-inline">; :</span>).',
+                keys: ['ShiftLeft', ';'],
+                modifiers: ['ShiftLeft'],
+                keysLabel: 'Shift + حرف ك (زر ; :)',
+                formula: '=SUM(A1:',
+                lang: 'EN'
+            },
+            {
+                num: 6,
+                shortTitle: '6. آخر خلية A5',
+                title: 'الخطوة 6: كتابة اسم آخر خلية (A5)',
+                desc: 'نكتب عنوان آخر خلية في النطاق المطلوب جمعه، هنا نضغط حرف <span class="kbd-inline">A</span> ثم الرقم <span class="kbd-inline">5</span>.',
+                keys: ['A', '5'],
+                modifiers: [],
+                keysLabel: 'A ثم 5',
+                formula: '=SUM(A1:A5',
+                lang: 'EN'
+            },
+            {
+                num: 7,
+                shortTitle: '7. إغلاق القوس )',
+                title: 'الخطوة 7: إغلاق القوس )',
+                desc: 'لإغلاق القوس <span class="formula-pill">)</span> نضغط باستمرار على مفتاح <span class="kbd-inline">Shift</span> ومعه مفتاح الرقم <span class="kbd-inline">0</span> في صف الأرقام العلوي.',
+                keys: ['ShiftLeft', '0'],
+                modifiers: ['ShiftLeft'],
+                keysLabel: 'Shift + 0',
+                formula: '=SUM(A1:A5)',
+                lang: 'EN'
+            },
+            {
+                num: 8,
+                shortTitle: '8. مفتاح Enter للنتيجة',
+                title: 'الخطوة 8: الضغط على مفتاح Enter لإظهار الناتج',
+                desc: 'أخيراً نضغط مفتاح <span class="kbd-inline">Enter</span> (أو ننقر على علامة الصح ✓ في شريط الصيغة) فيقوم Excel فوراً بحساب المجموع وإظهار الناتج <strong class="text-green-400">15</strong>!',
+                keys: ['Enter'],
+                modifiers: [],
+                keysLabel: 'مفتاح Enter',
+                formula: '15  ←  =SUM(A1:A5)',
+                lang: '✓ تم التنفيذ'
+            }
+        ];
+
+        let currentStepIdx = 0;
+        let autoPlayTimer = null;
+
+        // بناء بطاقات الخطوات القابلة للنقر
+        function renderKeyboardStepsGrid() {
+            const container = document.getElementById('keyboard-steps-grid');
+            container.innerHTML = '';
+            keyboardSteps.forEach((step, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = `kstep-card-${idx}`;
+                btn.onclick = () => {
+                    stopAutoPlay();
+                    setKeyboardStep(idx);
+                };
+                btn.className = 'text-right p-3 rounded-xl border transition flex items-center justify-between gap-2 text-xs sm:text-sm font-bold';
+                btn.innerHTML = `
+                    <span class="truncate">${step.shortTitle}</span>
+                    <span class="shrink-0 text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600" dir="ltr">${idx === 0 ? 'Alt+Shift' : idx === 8 ? 'Enter' : step.formula.slice(-2)}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // تفعيل خطوة معينة وإضاءة مفاتيحها
+        function setKeyboardStep(idx) {
+            currentStepIdx = idx;
+            const step = keyboardSteps[idx];
+
+            document.getElementById('step-badge').textContent = `الخطوة ${step.num} / 8`;
+            document.getElementById('step-title').textContent = step.title;
+            document.getElementById('step-desc').innerHTML = step.desc;
+            document.getElementById('step-keys-hint').textContent = `المفاتيح المطلوبة الآن: ${step.keysLabel}`;
+            document.getElementById('step-formula-text').textContent = step.formula || '(بانتظار الكتابة...)';
+            document.getElementById('lang-indicator').textContent = step.lang;
+
+            // تحديث حالة أزرار السابق والتالي
+            document.getElementById('btn-prev-step').disabled = (idx === 0);
+            document.getElementById('btn-next-step').textContent = (idx === keyboardSteps.length - 1) ? 'إعادة من البداية ↺' : 'التالي ►';
+
+            // إزالة الإضاءة عن كل المفاتيح أولاً
+            document.querySelectorAll('.kbd-key').forEach(k => {
+                k.classList.remove('key-active', 'key-modifier-active');
+            });
+
+            // إضاءة مفاتيح الخطوة الحالية
+            step.keys.forEach(kName => {
+                const el = document.querySelector(`.kbd-key[data-key="${CSS.escape(kName)}"]`);
+                if (el) {
+                    if (step.modifiers.includes(kName)) {
+                        el.classList.add('key-modifier-active');
+                    } else {
+                        el.classList.add('key-active');
+                    }
+                }
+            });
+
+            // تمييز البطاقة النشطة
+            keyboardSteps.forEach((_, i) => {
+                const card = document.getElementById(`kstep-card-${i}`);
+                if (!card) return;
+                if (i === idx) {
+                    card.className = 'text-right p-3 rounded-xl border-2 border-excel bg-excel-light text-excel-darker shadow-sm transition flex items-center justify-between gap-2 text-xs sm:text-sm font-extrabold';
+                } else {
+                    card.className = 'text-right p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-excel/50 text-slate-700 transition flex items-center justify-between gap-2 text-xs sm:text-sm font-bold';
+                }
+            });
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+                const playBtn = document.getElementById('btn-play-steps');
+                playBtn.textContent = '▶ تشغيل تلقائي';
+                playBtn.classList.replace('bg-red-500', 'bg-amber-500');
+                playBtn.classList.replace('text-white', 'text-slate-950');
+            }
+        }
+
+        document.getElementById('btn-prev-step').addEventListener('click', () => {
+            stopAutoPlay();
+            if (currentStepIdx > 0) setKeyboardStep(currentStepIdx - 1);
+        });
+
+        document.getElementById('btn-next-step').addEventListener('click', () => {
+            stopAutoPlay();
+            if (currentStepIdx < keyboardSteps.length - 1) {
+                setKeyboardStep(currentStepIdx + 1);
+            } else {
+                setKeyboardStep(0);
+            }
+        });
+
+        document.getElementById('btn-play-steps').addEventListener('click', () => {
+            const playBtn = document.getElementById('btn-play-steps');
+            if (autoPlayTimer) {
+                stopAutoPlay();
+                return;
+            }
+            if (currentStepIdx === keyboardSteps.length - 1) {
+                setKeyboardStep(0);
+            }
+            playBtn.textContent = '⏸ إيقاف';
+            playBtn.classList.replace('bg-amber-500', 'bg-red-500');
+            playBtn.classList.replace('text-slate-950', 'text-white');
+
+            autoPlayTimer = setInterval(() => {
+                if (currentStepIdx < keyboardSteps.length - 1) {
+                    setKeyboardStep(currentStepIdx + 1);
+                } else {
+                    stopAutoPlay();
+                }
+            }, 2200);
+        });
+
+
+        /* =========================================================================
+           2. محاكي Excel 2013 التفاعلي (Interactive Excel Simulator)
+           ========================================================================= */
+        const COLS = ['A', 'B', 'C', 'D'];
+        const ROWS = [1, 2, 3, 4, 5, 6];
+
+        const exercises = {
+            1: {
+                id: 1,
+                label: 'المطلوب في التمرين 1 (جمع عمودي):',
+                desc: 'احسب مجموع الخلايا من <span class="formula-pill">A1</span> إلى <span class="formula-pill">A5</span> في الخلية النشطة <span class="formula-pill">A6</span> (اضغط على <strong>Σ AutoSum</strong> للطريقة التلقائية، أو اكتب المعادلة يدوياً في شريط الصيغة ثم اضغط Enter).',
+                targetCell: 'A6',
+                rangeStart: 'A1',
+                rangeEnd: 'A5',
+                rangeCells: ['A1', 'A2', 'A3', 'A4', 'A5'],
+                expectedFormula: '=SUM(A1:A5)',
+                initialData: { A1: 1, A2: 2, A3: 3, A4: 4, A5: 5 }
+            },
+            2: {
+                id: 2,
+                label: 'المطلوب في التمرين 2 (جمع أفقي):',
+                desc: 'احسب مجموع الخلايا الأفقية <span class="formula-pill">A1</span> و <span class="formula-pill">B1</span> و <span class="formula-pill">C1</span> وضع الناتج في الخلية النشطة <span class="formula-pill">D1</span> (جرّب الطريقة التلقائية أو اليدوية).',
+                targetCell: 'D1',
+                rangeStart: 'A1',
+                rangeEnd: 'C1',
+                rangeCells: ['A1', 'B1', 'C1'],
+                expectedFormula: '=SUM(A1:C1)',
+                initialData: { A1: 10, B1: 20, C1: 30 }
+            },
+            3: {
+                id: 3,
+                label: 'المطلوب في التمرين 3 (جمع مصفوفة صفوف وأعمدة):',
+                desc: 'احسب مجموع المصفوفة الممتدة من <span class="formula-pill">A1</span> إلى <span class="formula-pill">C3</span> وضع الناتج في الخلية النشطة <span class="formula-pill">D6</span> (اكتب <span class="formula-pill">=SUM(A1:C3)</span> أو اضغط <strong>Σ AutoSum</strong>).',
+                targetCell: 'D6',
+                rangeStart: 'A1',
+                rangeEnd: 'C3',
+                rangeCells: ['A1', 'B1', 'C1', 'A2', 'B2', 'C2', 'A3', 'B3', 'C3'],
+                expectedFormula: '=SUM(A1:C3)',
+                initialData: { A1: 2, B1: 4, C1: 6, A2: 1, B2: 3, C2: 5, A3: 5, B3: 5, C3: 5 }
+            }
+        };
+
+        let currentExId = 1;
+        let gridValues = {};      // القيم الظاهرة أو المدخلة
+        let gridFormulas = {};    // الصيغ المخزنة للخلايا
+        let selectedCell = 'A6';
+        let pendingAutoSum = false;
+
+        // بناء شبكة الخلايا
+        function buildExcelGrid() {
+            const tbody = document.getElementById('excel-grid-body');
+            tbody.innerHTML = '';
+
+            ROWS.forEach(r => {
+                const tr = document.createElement('tr');
+                // ترويسة الصف
+                const th = document.createElement('th');
+                th.textContent = r;
+                th.setAttribute('data-row', r);
+                tr.appendChild(th);
+
+                COLS.forEach(c => {
+                    const cellId = `${c}${r}`;
+                    const td = document.createElement('td');
+                    td.id = `cell-td-${cellId}`;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = `cell-input-${cellId}`;
+                    input.className = 'excel-cell-input';
+                    input.autocomplete = 'off';
+                    input.spellcheck = false;
+
+                    // عند النقر أو التركيز على خلية
+                    input.addEventListener('focus', () => selectCell(cellId));
+
+                    // عند الكتابة داخل الخلية مباشرة
+                    input.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        if (cellId === selectedCell) {
+                            document.getElementById('sim-formula-input').value = val;
+                        }
+                        if (cellId !== exercises[currentExId].targetCell) {
+                            gridValues[cellId] = val;
+                            // إعادة حساب الناتج تلقائياً إذا كانت المعادلة موجودة مسبقاً في خلية الناتج
+                            recalculateIfSolved();
+                        }
+                    });
+
+                    // دعم Enter و Alt+= داخل الخلية
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (cellId === exercises[currentExId].targetCell) {
+                                confirmFormula();
+                            } else {
+                                input.blur();
+                                selectCell(exercises[currentExId].targetCell);
+                            }
+                        } else if (e.altKey && e.key === '=') {
+                            e.preventDefault();
+                            triggerAutoSum();
+                        }
+                    });
+
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // تحميل تمرين معين
+        function loadExercise(id) {
+            currentExId = id;
+            const ex = exercises[id];
+            pendingAutoSum = false;
+
+            // تحديث أزرار التمارين
+            [1, 2, 3].forEach(num => {
+                const btn = document.getElementById(`ex-btn-${num}`);
+                if (num === id) {
+                    btn.className = 'ex-btn px-3 py-1.5 rounded-xl bg-white text-excel-dark shadow transition';
+                } else {
+                    btn.className = 'ex-btn px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white transition';
+                }
+            });
+
+            document.getElementById('sim-task-label').textContent = ex.label;
+            document.getElementById('sim-task-desc').innerHTML = ex.desc;
+
+            // تصفير الشبكة وملء البيانات الابتدائية
+            gridValues = {};
+            gridFormulas = {};
+            ROWS.forEach(r => {
+                COLS.forEach(c => {
+                    const cellId = `${c}${r}`;
+                    const val = ex.initialData[cellId] !== undefined ? ex.initialData[cellId] : '';
+                    gridValues[cellId] = val;
+                    const inp = document.getElementById(`cell-input-${cellId}`);
+                    if (inp) {
+                        inp.value = val;
+                        inp.placeholder = (cellId === ex.targetCell) ? 'الناتج' : '';
+                    }
+                    const td = document.getElementById(`cell-td-${cellId}`);
+                    if (td) {
+                        td.classList.remove('excel-cell-range', 'excel-cell-target-hint');
+                        if (cellId === ex.targetCell) {
+                            td.classList.add('excel-cell-target-hint');
+                        }
+                    }
+                });
+            });
+
+            hideFeedback();
+            selectCell(ex.targetCell);
+            document.getElementById('sim-status-text').textContent = 'جاهز للعمل - اختر Σ AutoSum أو اكتب المعادلة';
+        }
+
+        function resetCurrentExercise() {
+            loadExercise(currentExId);
+        }
+
+        // تحديد خلية كخلية نشطة
+        function selectCell(cellId) {
+            selectedCell = cellId;
+            document.getElementById('sim-name-box').textContent = cellId;
+
+            // إزالة التحديد السابق ومقبض التعبئة
+            document.querySelectorAll('.excel-cell-selected').forEach(el => el.classList.remove('excel-cell-selected'));
+            document.querySelectorAll('.fill-handle').forEach(el => el.remove());
+            document.querySelectorAll('#excel-grid th').forEach(th => th.classList.remove('col-active', 'row-active'));
+
+            const td = document.getElementById(`cell-td-${cellId}`);
+            if (td) {
+                td.classList.add('excel-cell-selected');
+                const handle = document.createElement('div');
+                handle.className = 'fill-handle';
+                td.appendChild(handle);
+            }
+
+            // تمييز العمود والصف المقابل
+            const col = cellId[0];
+            const row = cellId.slice(1);
+            const colTh = document.querySelector(`#excel-grid th[data-col="${col}"]`);
+            const rowTh = document.querySelector(`#excel-grid th[data-row="${row}"]`);
+            if (colTh) colTh.classList.add('col-active');
+            if (rowTh) rowTh.classList.add('row-active');
+
+            // تحديث شريط الصيغة بما داخل الخلية (المعادلة إن وجدت، وإلا القيمة)
+            const formulaInput = document.getElementById('sim-formula-input');
+            if (gridFormulas[cellId]) {
+                formulaInput.value = gridFormulas[cellId];
+            } else {
+                const cellInp = document.getElementById(`cell-input-${cellId}`);
+                formulaInput.value = cellInp ? cellInp.value : '';
+            }
+        }
+
+        // تشغيل الجمع التلقائي AutoSum
+        function triggerAutoSum() {
+            const ex = exercises[currentExId];
+            // التأكد من الانتقال لخلية الناتج المستهدفة
+            selectCell(ex.targetCell);
+            pendingAutoSum = true;
+
+            const formulaStr = ex.expectedFormula;
+            document.getElementById('sim-formula-input').value = formulaStr;
+            document.getElementById(`cell-input-${ex.targetCell}`).value = formulaStr;
+
+            // تظليل نطاق الخلايا المشمول بالجمع مثل إكسل الحقيقي
+            clearRangeHighlight();
+            ex.rangeCells.forEach(cid => {
+                const td = document.getElementById(`cell-td-${cid}`);
+                if (td) td.classList.add('excel-cell-range');
+            });
+
+            document.getElementById('sim-status-text').textContent = 'اضغط علامة الصح ✓ أو Enter لتأكيد المعادلة';
+            showFeedback(
+                'info',
+                `✨ <strong>تم إدراج دالة الجمع التلقائي!</strong> ظهرت المعادلة <span class="formula-pill">${formulaStr}</span> وتظللت خلايا النطاق باللون الأزرق. الآن اضغط على علامة الصح (<strong>✓</strong>) في شريط الصيغة أو مفتاح <strong>Enter</strong> لإظهار الناتج!`
+            );
+
+            // التركيز على شريط الصيغة ليتمكن الطالب من ضغط Enter مباشرة
+            document.getElementById('sim-formula-input').focus();
+        }
+
+        function clearRangeHighlight() {
+            document.querySelectorAll('.excel-cell-range').forEach(el => el.classList.remove('excel-cell-range'));
+        }
+
+        // إلغاء العملية (زر ✕)
+        function cancelFormula() {
+            const ex = exercises[currentExId];
+            pendingAutoSum = false;
+            clearRangeHighlight();
+
+            const targetInp = document.getElementById(`cell-input-${ex.targetCell}`);
+            const formulaInp = document.getElementById('sim-formula-input');
+
+            if (gridFormulas[ex.targetCell]) {
+                const computed = computeRangeSum(ex.rangeCells);
+                targetInp.value = computed;
+                formulaInp.value = gridFormulas[ex.targetCell];
+            } else {
+                targetInp.value = '';
+                formulaInp.value = '';
+            }
+
+            document.getElementById('sim-status-text').textContent = 'تم إلغاء العملية (✕)';
+            showFeedback('info', 'تم الضغط على علامة الخطأ (<strong>✕</strong>) وإلغاء العملية الحسابية كما في برنامج Excel الحقيقي.');
+        }
+
+        // حساب مجموع نطاق فعلي من قيم الجدول الحالية
+        function computeRangeSum(cellList) {
+            return cellList.reduce((acc, cid) => {
+                const raw = document.getElementById(`cell-input-${cid}`).value;
+                const num = parseFloat(raw);
+                return acc + (isNaN(num) ? 0 : num);
+            }, 0);
+        }
+
+        // إعادة الحساب تلقائياً عند تعديل الأرقام بعد حل التمرين
+        function recalculateIfSolved() {
+            const ex = exercises[currentExId];
+            if (gridFormulas[ex.targetCell]) {
+                const sumVal = computeRangeSum(ex.rangeCells);
+                document.getElementById(`cell-input-${ex.targetCell}`).value = sumVal;
+                document.getElementById('sim-status-text').textContent = `تم تحديث الناتج تلقائياً = ${sumVal}`;
+            }
+        }
+
+        // التحقق الذكي من المعادلة وتنفيذها (عند ضغط ✓ أو Enter)
+        function confirmFormula() {
+            const ex = exercises[currentExId];
+            const rawInput = document.getElementById('sim-formula-input').value.trim();
+            clearRangeHighlight();
+            pendingAutoSum = false;
+
+            // إذا كان الطالب واقفاً على خلية غير خلية الناتج
+            if (selectedCell !== ex.targetCell) {
+                showFeedback(
+                    'error',
+                    `⚠️ أنت حالياً تحدد الخلية <span class="formula-pill">${selectedCell}</span>! المطلوب وضع الناتج في الخلية <span class="formula-pill">${ex.targetCell}</span>. اضغط عليها أولاً ثم أعد المحاولة.`
+                );
+                return;
+            }
+
+            if (!rawInput) {
+                showFeedback('error', '⚠️ شريط الصيغة فارغ! اكتب المعادلة مثل <span class="formula-pill">' + ex.expectedFormula + '</span> أو اضغط على زر <strong>Σ AutoSum</strong>.');
+                return;
+            }
+
+            // 1. فحص وجود أحرف عربية بالخطأ
+            if (/[\u0600-\u06FF]/.test(rawInput)) {
+                showFeedback(
+                    'error',
+                    '❌ <strong>خطأ شائع في الامتحان:</strong> لقد كتبت أحرفاً عربية! اضغط على <span class="kbd-inline">Alt + Shift</span> لتحويل الكيبورد إلى الإنجليزية (EN) ثم اكتب <span class="formula-pill">' + ex.expectedFormula + '</span>.'
+                );
+                return;
+            }
+
+            // 2. فحص علامة اليساوي في البداية
+            if (!rawInput.startsWith('=')) {
+                showFeedback(
+                    'error',
+                    '❌ <strong>نسيت علامة اليساوي (=) في البداية!</strong> بدون علامة <span class="formula-pill">=</span> يعتبر Excel الكتابة مجرد نص عادي ولن يحسب الناتج. جرب: <span class="formula-pill">' + ex.expectedFormula + '</span>.'
+                );
+                return;
+            }
+
+            // إزالة المسافات وتوحيد الأحرف للكبير للفحص
+            const normalized = rawInput.replace(/\s+/g, '').toUpperCase();
+
+            // 3. فحص القاعدة الذهبية (كتابة أرقام مباشرة بدل أسماء الخلايا)
+            if (/^=(SUM\()?[\d+\-,;.\s]+(\))?$/.test(normalized)) {
+                showFeedback(
+                    'error',
+                    '❌ <strong>تذكّر القاعدة الذهبية!</strong> كتبت أرقاماً مباشرة داخل المعادلة، وفي امتحان Excel يجب استخدام <strong>أسماء الخلايا</strong> مثل <span class="formula-pill">' + ex.expectedFormula + '</span> وليس الأرقام.'
+                );
+                return;
+            }
+
+            // 4. فحص الصيغة اليدوية بالجمع التقليدي مثل =A1+A2+A3+A4+A5
+            const plusForm = '=' + ex.rangeCells.join('+');
+            if (normalized === plusForm) {
+                const result = computeRangeSum(ex.rangeCells);
+                gridFormulas[ex.targetCell] = normalized;
+                document.getElementById(`cell-input-${ex.targetCell}`).value = result;
+                showFeedback(
+                    'warning',
+                    `👍 <strong>الناتج صحيح (${result})!</strong> لكنك استخدمت علامة (+) يدوياً؛ في امتحان <strong>دالة الجمع</strong> يفضّل كتابة دالة SUM المختصرة: <span class="formula-pill">${ex.expectedFormula}</span> لضمان الدرجة الكاملة.`
+                );
+                return;
+            }
+
+            // 5. فحص اسم الدالة SUM
+            if (!normalized.startsWith('=SUM')) {
+                showFeedback(
+                    'error',
+                    '❌ تأكد من كتابة اسم دالة الجمع بشكل صحيح بعد اليساوي: <span class="formula-pill">=SUM(...)</span> (الحروف S ثم U ثم M).'
+                );
+                return;
+            }
+
+            // 6. فحص الأقواس
+            if (!normalized.includes('(') || !normalized.includes(')')) {
+                showFeedback(
+                    'error',
+                    '❌ <strong>خطأ في الأقواس!</strong> تأكد من فتح القوس <span class="formula-pill">(</span> عبر <span class="kbd-inline">Shift + 9</span> وإغلاقه <span class="formula-pill">)</span> عبر <span class="kbd-inline">Shift + 0</span>.'
+                );
+                return;
+            }
+
+            // استخراج المحتوى داخل القوسين
+            const match = normalized.match(/^=SUM\((.*)\)$/);
+            if (!match) {
+                showFeedback('error', '❌ صيغة الأقواس غير مكتملة بشكل صحيح. الصيغة المطلوبة هي: <span class="formula-pill">' + ex.expectedFormula + '</span>.');
+                return;
+            }
+
+            const inside = match[1];
+
+            // 7. فحص الفاصلة المنقوطة بدل النقطتين
+            if (inside.includes(';') && !inside.includes(':')) {
+                showFeedback(
+                    'error',
+                    '❌ لقد كتبت فاصلة منقوطة <span class="formula-pill">;</span> بدل النقطتين الرأسيتين <span class="formula-pill">:</span>! لتحديد نطاق (من.. إلى..) يجب الضغط على <span class="kbd-inline">Shift</span> مع مفتاح حرف <strong>ك</strong>.'
+                );
+                return;
+            }
+
+            // 8. فحص تطابق النطاق (يقبل A1:A5 أو A5:A1)
+            const expectedForward = `${ex.rangeStart}:${ex.rangeEnd}`;
+            const expectedReverse = `${ex.rangeEnd}:${ex.rangeStart}`;
+            const commaForm = ex.rangeCells.join(',');
+
+            if (inside === expectedForward || inside === expectedReverse || inside === commaForm) {
+                const result = computeRangeSum(ex.rangeCells);
+                const cleanFormula = `=SUM(${inside})`;
+                gridFormulas[ex.targetCell] = cleanFormula;
+                document.getElementById(`cell-input-${ex.targetCell}`).value = result;
+                document.getElementById('sim-formula-input').value = cleanFormula;
+                document.getElementById('sim-status-text').textContent = `✓ أحسنت! الناتج = ${result}`;
+
+                showFeedback(
+                    'success',
+                    `🎉 <strong>ممتاز! إجابة صحيحة 100%</strong> — تم تنفيذ المعادلة <span class="formula-pill">${cleanFormula}</span> بنجاح وظهور الناتج <strong class="text-lg text-excel">${result}</strong> في الخلية <span class="formula-pill">${ex.targetCell}</span>. (جرب الآن تعديل أي رقم في الجدول لترى كيف يتحدث الناتج تلقائياً!)`
+                );
+            } else {
+                showFeedback(
+                    'error',
+                    `❌ النطاق المكتوب داخل القوسين (<span class="formula-pill">${inside}</span>) لا يطابق خلايا هذا التمرين. يجب أن يبدأ النطاق بأول خلية <span class="formula-pill">${ex.rangeStart}</span> ثم نقطتين <span class="formula-pill">:</span> ثم آخر خلية <span class="formula-pill">${ex.rangeEnd}</span>، أي: <span class="formula-pill">${ex.expectedFormula}</span>.`
+                );
+            }
+        }
+
+        function showSimulatorHint() {
+            const ex = exercises[currentExId];
+            showFeedback(
+                'info',
+                `💡 <strong>تلميح التمرين ${ex.id}:</strong> تأكد أن الخلية <span class="formula-pill">${ex.targetCell}</span> محددة، ثم اكتب <span class="formula-pill">${ex.expectedFormula}</span> في شريط الصيغة واضغط <strong>Enter</strong> (أو ببساطة اضغط زر <strong>Σ AutoSum</strong> ثم ✓).`
+            );
+        }
+
+        function showFeedback(type, htmlMsg) {
+            const box = document.getElementById('sim-feedback');
+            box.classList.remove('hidden', 'bg-green-50', 'border-green-400', 'text-green-900', 'bg-red-50', 'border-red-400', 'text-red-900', 'bg-amber-50', 'border-amber-400', 'text-amber-900', 'bg-blue-50', 'border-blue-300', 'text-blue-900');
+
+            if (type === 'success') {
+                box.classList.add('bg-green-50', 'border-green-400', 'text-green-900');
+            } else if (type === 'error') {
+                box.classList.add('bg-red-50', 'border-red-400', 'text-red-900');
+            } else if (type === 'warning') {
+                box.classList.add('bg-amber-50', 'border-amber-400', 'text-amber-900');
+            } else {
+                box.classList.add('bg-blue-50', 'border-blue-300', 'text-blue-900');
+            }
+            box.innerHTML = htmlMsg;
+        }
+
+        function hideFeedback() {
+            document.getElementById('sim-feedback').classList.add('hidden');
+        }
+
+        // ربط شريط الصيغة بالخلية النشطة ومفاتيح Enter / Escape / Alt+=
+        const formulaBarInput = document.getElementById('sim-formula-input');
+        formulaBarInput.addEventListener('input', (e) => {
+            const cellInp = document.getElementById(`cell-input-${selectedCell}`);
+            if (cellInp) cellInp.value = e.target.value;
+            if (selectedCell !== exercises[currentExId].targetCell) {
+                gridValues[selectedCell] = e.target.value;
+                recalculateIfSolved();
+            }
+        });
+        formulaBarInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                confirmFormula();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                cancelFormula();
+            } else if (e.altKey && e.key === '=') {
+                e.preventDefault();
+                triggerAutoSum();
+            }
+        });
+
+
+        /* =========================================================================
+           3. منطق إظهار وإخفاء الأجوبة النموذجية (Section 4)
+           ========================================================================= */
+        let allExpanded = false;
+
+        function toggleAnswer(panelId, btn) {
+            const panel = document.getElementById(panelId);
+            const isHidden = panel.classList.contains('hidden');
+            if (isHidden) {
+                panel.classList.remove('hidden');
+                btn.textContent = 'إخفاء الحل النموذجي ▴';
+                btn.classList.replace('bg-excel', 'bg-slate-700');
+                btn.classList.replace('hover:bg-excel-dark', 'hover:bg-slate-800');
+            } else {
+                panel.classList.add('hidden');
+                btn.textContent = 'إظهار الحل النموذجي ▾';
+                btn.classList.replace('bg-slate-700', 'bg-excel');
+                btn.classList.replace('hover:bg-slate-800', 'hover:bg-excel-dark');
+            }
+        }
+
+        function toggleAllAnswers() {
+            allExpanded = !allExpanded;
+            const panels = ['ans-1', 'ans-2', 'ans-3', 'ans-4'];
+            const btns = document.querySelectorAll('.qa-btn');
+            const masterBtn = document.getElementById('toggle-all-qa');
+
+            panels.forEach((id, i) => {
+                const panel = document.getElementById(id);
+                const btn = btns[i];
+                if (allExpanded) {
+                    panel.classList.remove('hidden');
+                    btn.textContent = 'إخفاء الحل النموذجي ▴';
+                    btn.classList.remove('bg-excel', 'hover:bg-excel-dark');
+                    btn.classList.add('bg-slate-700', 'hover:bg-slate-800');
+                } else {
+                    panel.classList.add('hidden');
+                    btn.textContent = 'إظهار الحل النموذجي ▾';
+                    btn.classList.remove('bg-slate-700', 'hover:bg-slate-800');
+                    btn.classList.add('bg-excel', 'hover:bg-excel-dark');
+                }
+            });
+
+            masterBtn.textContent = allExpanded ? '🙈 إخفاء جميع الحلول' : '👁️ إظهار جميع الحلول';
+        }
+
+        // تهيئة الصفحة عند التحميل
+        window.addEventListener('DOMContentLoaded', () => {
+            renderKeyboardStepsGrid();
+            setKeyboardStep(0);
+            buildExcelGrid();
+            loadExercise(1);
+        });
+    </script>
+</body>
+</html>
